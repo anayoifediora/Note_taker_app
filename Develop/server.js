@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-
+const uuid = require('uuid-random');
 const PORT = 3001;
 
 const app = express();
@@ -22,18 +22,56 @@ app.get('/notes', (req, res) =>
 app.get('/api/notes', (req, res) => {
     //Send a message to the client
     res.status(200).json(`${req.method} request received to get notes`);
-
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err) 
-        } else {
-            const parsedNotes = JSON.parse(data);
-        }
-    })
     
     //Log the request to the console
     console.log(`${req.method} request received to get notes`);
 })
+
+app.post('/api/notes', (req, res) => {
+    //Log that a POST request was received
+    console.info(`${req.method} request received to add notes`);
+    
+    //Destructuring the request items
+    const {title, text} = req.body;
+    if(title && text) {
+        const newNote = {
+            title,
+            text,
+            note_id: uuid(),
+        };
+
+        //Obtain existing notes
+        fs.readFile('./db/db.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error(err)
+            } else {
+                //Convert string to JSON object
+                const parsedNotes = JSON.parse(data);
+                
+                //Add a new note
+                parsedNotes.push(newNote);
+
+                //Write updated notes back to the file
+                fs.writeFile(
+                    './db/db.json', 
+                    JSON.stringify(parsedNotes, null, 3),
+                    (writeErr) => 
+                        writeErr? console.error(writeErr) : console.info('Successfully updates notes!')
+                );
+            }
+        });
+
+        const response = {
+            status: 'success',
+            body: newNote,
+        };
+
+        console.log(response);
+        res.status(201).json(response);
+    } else {
+        res.status(500).json('Error in posting review');
+    }
+});
 
 app.listen(PORT, () => 
     console.log(`App listening at http://localhost:${PORT} 🚀`));
