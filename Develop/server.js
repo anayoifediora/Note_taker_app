@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const uuid = require('uuid-random');
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
@@ -20,12 +20,18 @@ app.get('/notes', (req, res) =>
 );
 
 app.get('/api/notes', (req, res) => {
-    //Send a message to the client
-    res.status(200).json(`${req.method} request received to get notes`);
+    fs.readFile('db/db.json', 'utf8', (error, data) => {
+      if (error) {
+        console.error('Error reading db.json:', error);
+        res.status(500).send('Internal Server Error');
+      } else {
+        const jsonData = JSON.parse(data);
+        res.json(jsonData);
+      }
+    });
+  });
     
-    //Log the request to the console
-    console.log(`${req.method} request received to get notes`);
-})
+
 
 app.post('/api/notes', (req, res) => {
     //Log that a POST request was received
