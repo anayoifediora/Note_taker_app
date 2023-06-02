@@ -20,6 +20,10 @@ app.get('/notes', (req, res) =>
 );
 
 app.get('/api/notes', (req, res) => {
+
+    //Send a message to the client
+    console.info(`${req.method} request received to get notes`);
+
     fs.readFile('db/db.json', 'utf8', (error, data) => {
       if (error) {
         console.error('Error reading db.json:', error);
@@ -30,8 +34,6 @@ app.get('/api/notes', (req, res) => {
       }
     });
   });
-    
-
 
 app.post('/api/notes', (req, res) => {
     //Log that a POST request was received
@@ -43,7 +45,7 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            note_id: uuid(),
+            id: uuid(),
         };
 
         //Obtain existing notes
@@ -62,7 +64,7 @@ app.post('/api/notes', (req, res) => {
                     './db/db.json', 
                     JSON.stringify(parsedNotes, null, 3),
                     (writeErr) => 
-                        writeErr? console.error(writeErr) : console.info('Successfully updates notes!')
+                        writeErr? console.error(writeErr) : console.info('Successfully updated notes!')
                 );
             }
         });
@@ -78,6 +80,7 @@ app.post('/api/notes', (req, res) => {
         res.status(500).json('Error in posting review');
     }
 });
+
 
 app.listen(PORT, () => 
     console.log(`App listening at http://localhost:${PORT} 🚀`));
