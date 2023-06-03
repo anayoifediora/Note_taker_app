@@ -1,9 +1,5 @@
 [
    {
-      "title": "Test Title",
-      "text": "Test text"
-   },
-   {
       "title": "Hello",
       "text": "complete your assignment",
       "id": "17a8fd51-3a24-48f7-aad5-3778ec839210"
@@ -12,5 +8,10 @@
       "title": "Database",
       "text": "Create Database",
       "id": "d5b33110-4e60-4df3-9078-6279a590ef36"
+   },
+   {
+      "title": "Course work",
+      "text": "Read course material",
+      "id": "56294d61-12e4-4dc3-ad21-a6db56b7463f"
    }
 ]
